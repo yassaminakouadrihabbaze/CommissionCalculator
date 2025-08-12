@@ -30,7 +30,6 @@ namespace FCamara.CommissionCalculator.Controllers
             return Ok(response);
         }
 
-        // Backwards-compatibility: support legacy route used by the UI earlier
         [HttpPost("/Commision")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult CalculateLegacy([FromBody] CommissionCalculationRequest calculationRequest)

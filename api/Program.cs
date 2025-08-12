@@ -9,20 +9,14 @@ namespace FCamara.CommissionCalculator
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             builder.Services.AddControllers();
             builder.Services.AddProblemDetails();
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Options
             builder.Services.Configure<CommissionRateOptions>(builder.Configuration.GetSection("CommissionRates"));
-
-            // DI
             builder.Services.AddSingleton<ICommissionCalculator, CommissionCalculator>();
 
-            // CORS for local dev UI
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontendDev", policyBuilder =>
@@ -41,7 +35,6 @@ namespace FCamara.CommissionCalculator
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -54,11 +47,8 @@ namespace FCamara.CommissionCalculator
             }
 
             app.UseCors("AllowFrontendDev");
-
             app.UseAuthorization();
-
             app.MapControllers();
-
             app.Run();
         }
     }
