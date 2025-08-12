@@ -296,3 +296,14 @@ input[type=number] {
   color: #fecaca;
   font-size: 14px;
 }
+
+.inputError {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important;
+}
+
+.fieldError {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #fecaca;
+}
