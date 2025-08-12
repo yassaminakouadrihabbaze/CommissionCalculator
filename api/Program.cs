@@ -1,6 +1,8 @@
 
 namespace FCamara.CommissionCalculator
 {
+    using FCamara.CommissionCalculator.Services;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -8,11 +10,34 @@ namespace FCamara.CommissionCalculator
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddProblemDetails();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Options
+            builder.Services.Configure<CommissionRateOptions>(builder.Configuration.GetSection("CommissionRates"));
+
+            // DI
+            builder.Services.AddSingleton<ICommissionCalculator, CommissionCalculator>();
+
+            // CORS for local dev UI
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontendDev", policyBuilder =>
+                {
+                    policyBuilder
+                        .WithOrigins(
+                            "http://localhost:3000",
+                            "https://localhost:3000",
+                            "http://localhost:3001",
+                            "https://localhost:3001"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -23,10 +48,14 @@ namespace FCamara.CommissionCalculator
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
+            app.UseCors("AllowFrontendDev");
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
